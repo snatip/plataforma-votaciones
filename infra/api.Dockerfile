@@ -1,6 +1,6 @@
 # API image: Node.js LTS runs the TypeScript directly (no build step). Built on the VM from the
 # public repository at the commit being deployed.
-FROM node:24-bookworm-slim AS deps
+FROM node:26-bookworm-slim AS deps
 WORKDIR /app
 RUN npm install --global pnpm@10.33.2
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml tsconfig.base.json ./
@@ -12,7 +12,7 @@ RUN pnpm install --frozen-lockfile --prod --filter "@pv/api..."
 COPY packages/core/src packages/core/src
 COPY apps/api/src apps/api/src
 
-FROM node:24-bookworm-slim
+FROM node:26-bookworm-slim
 WORKDIR /app
 COPY --from=deps /app /app
 RUN mkdir -p /data && chown node:node /data
