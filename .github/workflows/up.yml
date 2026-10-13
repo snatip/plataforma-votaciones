@@ -22,7 +22,7 @@ jobs:
       api: ${{ steps.hosts.outputs.api }}
       reception: ${{ steps.hosts.outputs.reception }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Deploy key
         env:
           KEY: ${{ secrets.DEPLOY_SSH_KEY }}
