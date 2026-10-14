@@ -35,7 +35,7 @@ jobs:
       - run: node apps/web/scripts/size.ts
       - uses: actions/attest-build-provenance@v3
         with: { subject-path: "apps/web/dist/**" }
-      - uses: actions/upload-pages-artifact@v4
+      - uses: actions/upload-pages-artifact@v5
         with: { path: apps/web/dist }
   deploy:
     needs: build
