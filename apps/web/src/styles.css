@@ -68,6 +68,11 @@
     --width-full: 90rem;
     --projection-scale: 1.5;
 
+    /* Motion: transform and opacity only, ease-out, under 300ms. */
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --duration-press: 120ms;
+    --duration-enter: 200ms;
+
     color-scheme: light dark;
   }
   @media (prefers-color-scheme: dark) {
@@ -534,6 +539,25 @@ td {
 }
 .projection h1 {
   font-size: var(--text-2xl);
+}
+/* Motion: only where it confirms a state change, never for tabs, and never with reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  :is(button, .button):not(.tabs button) {
+    transition: transform var(--duration-press) var(--ease-out);
+  }
+  :is(button, .button):not(.tabs button, [disabled]):active {
+    transform: scale(0.98);
+  }
+  /* A new message (vote received, error) settles into place instead of popping in. */
+  .status {
+    transition:
+      opacity var(--duration-enter) var(--ease-out),
+      transform var(--duration-enter) var(--ease-out);
+    @starting-style {
+      opacity: 0;
+      transform: translateY(var(--space-1));
+    }
+  }
 }
 /* Windows high contrast and similar: keep the states that colour alone was showing. */
 @media (forced-colors: active) {
