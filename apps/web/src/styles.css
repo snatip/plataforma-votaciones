@@ -1,27 +1,68 @@
-/* Mobile first. Colours meet WCAG 2.2 AA contrast in both themes. */
-:root {
-  --bg: #ffffff;
-  --fg: #1a1a1a;
-  --muted: #555555;
-  --accent: #0b5cad;
-  --accent-fg: #ffffff;
-  --ok: #1d6b2f;
-  --error: #a4161a;
-  --border: #c4c4c4;
-  --card: #f5f7fa;
-  color-scheme: light dark;
-}
-@media (prefers-color-scheme: dark) {
+/* Mobile first. Colours meet WCAG 2.2 AA contrast in both themes. Every value comes from a token. */
+/* Layered so that public/theme.css (unlayered) wins whatever the load order. */
+@layer tokens {
   :root {
-    --bg: #121417;
-    --fg: #ececec;
-    --muted: #b5b5b5;
-    --accent: #7ab8ff;
-    --accent-fg: #0b0d10;
-    --ok: #7fd18f;
-    --error: #ff8a8a;
-    --border: #4a4f57;
-    --card: #1c2026;
+    /* Colour (OKLCH). A deployment can override the accent in public/theme.css. */
+    --bg: oklch(1 0 0);
+    --surface: oklch(0.975 0.005 258);
+    --surface-2: oklch(0.975 0.005 258);
+    --fg: oklch(0.218 0 0);
+    --fg-muted: oklch(0.45 0 0);
+    --border: oklch(0.82 0 0);
+    --border-strong: oklch(0.45 0 0);
+    --accent: oklch(0.478 0.147 254);
+    --accent-strong: oklch(0.478 0.147 254);
+    --accent-fg: oklch(1 0 0);
+    --ok: oklch(0.466 0.119 147);
+    --error: oklch(0.462 0.175 27);
+
+    /* Type: six sizes. */
+    --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --text-sm: 0.875rem;
+    --text-base: 1rem;
+    --text-md: 1.125rem;
+    --text-lg: 1.375rem;
+    --text-xl: 1.75rem;
+    --text-2xl: 2.25rem;
+    --leading: 1.5;
+
+    /* Space: 4px grid. */
+    --space-1: 0.25rem;
+    --space-2: 0.5rem;
+    --space-3: 0.75rem;
+    --space-4: 1rem;
+    --space-6: 1.5rem;
+    --space-8: 2rem;
+    --space-12: 3rem;
+
+    /* Shape and sizes. */
+    --radius-control: 4px;
+    --radius-panel: 6px;
+    --radius-pill: 999px;
+    --border-w: 1px;
+    --focus-w: 3px;
+    --focus-offset: 2px;
+    --target: 2.75rem;
+    --check: 1.25rem;
+    --width-main: 48rem;
+
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: oklch(0.19 0.007 258);
+      --surface: oklch(0.242 0.013 258);
+      --surface-2: oklch(0.242 0.013 258);
+      --fg: oklch(0.943 0 0);
+      --fg-muted: oklch(0.773 0 0);
+      --border: oklch(0.426 0.015 260);
+      --border-strong: oklch(0.773 0 0);
+      --accent: oklch(0.769 0.121 253);
+      --accent-strong: oklch(0.769 0.121 253);
+      --accent-fg: oklch(0.158 0.007 258);
+      --ok: oklch(0.791 0.123 149);
+      --error: oklch(0.761 0.142 21);
+    }
   }
 }
 * {
@@ -31,15 +72,17 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font: 1rem/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading);
 }
 header {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1rem;
+  gap: var(--space-2) var(--space-4);
   align-items: center;
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-w) solid var(--border);
 }
 .brand {
   margin: 0;
@@ -47,7 +90,7 @@ header {
 }
 header nav {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-4);
   flex: 1;
 }
 a {
@@ -57,9 +100,9 @@ a[aria-current="page"] {
   font-weight: 700;
 }
 main {
-  max-width: 48rem;
+  max-width: var(--width-main);
   margin: 0 auto;
-  padding: 1rem;
+  padding: var(--space-4);
 }
 main:focus {
   outline: none;
@@ -69,54 +112,54 @@ main:focus {
   left: -999px;
 }
 .skip:focus {
-  left: 1rem;
-  top: 1rem;
+  left: var(--space-4);
+  top: var(--space-4);
   background: var(--bg);
-  padding: 0.5rem;
+  padding: var(--space-2);
   z-index: 1;
 }
 :focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 2px;
+  outline: var(--focus-w) solid var(--accent);
+  outline-offset: var(--focus-offset);
 }
 label {
   display: block;
-  margin-top: 0.75rem;
+  margin-top: var(--space-3);
   font-weight: 600;
 }
 label.option {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
   align-items: center;
   font-weight: 400;
-  min-height: 2.75rem;
+  min-height: var(--target);
 }
 input,
 select,
 textarea {
   font: inherit;
   width: 100%;
-  padding: 0.5rem;
+  padding: var(--space-2);
   color: var(--fg);
   background: var(--bg);
-  border: 1px solid var(--muted);
-  border-radius: 4px;
+  border: var(--border-w) solid var(--border-strong);
+  border-radius: var(--radius-control);
 }
 label.option input {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--check);
+  height: var(--check);
 }
 button,
 .button {
   font: inherit;
   display: inline-block;
-  min-height: 2.75rem;
-  margin-top: 0.75rem;
-  padding: 0.5rem 1rem;
+  min-height: var(--target);
+  margin-top: var(--space-3);
+  padding: var(--space-2) var(--space-4);
   color: var(--fg);
-  background: var(--card);
-  border: 1px solid var(--muted);
-  border-radius: 4px;
+  background: var(--surface);
+  border: var(--border-w) solid var(--border-strong);
+  border-radius: var(--radius-control);
   cursor: pointer;
   text-decoration: none;
 }
@@ -133,30 +176,30 @@ header button {
   margin-top: 0;
 }
 fieldset {
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-control);
   margin: 0;
 }
 legend {
   font-weight: 700;
-  padding: 0 0.25rem;
+  padding: 0 var(--space-1);
 }
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 1rem;
-  margin: 1rem 0;
+  background: var(--surface);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-panel);
+  padding: var(--space-4);
+  margin: var(--space-4) 0;
 }
 .ballot {
-  margin-top: 1rem;
+  margin-top: var(--space-4);
 }
 .badge {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   font-weight: 600;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  padding: 0 0.5rem;
+  border: var(--border-w) solid currentColor;
+  border-radius: var(--radius-pill);
+  padding: 0 var(--space-2);
   white-space: nowrap;
 }
 .status-ok {
@@ -167,16 +210,16 @@ legend {
   font-weight: 600;
 }
 .note {
-  color: var(--muted);
+  color: var(--fg-muted);
 }
 .fingerprint code {
-  font-size: 1.05rem;
+  font-size: var(--text-md);
   word-break: break-all;
 }
 .tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.25rem;
+  gap: var(--space-1);
 }
 .tabs button[aria-current="page"] {
   background: var(--accent);
@@ -189,17 +232,17 @@ table {
 th,
 td {
   text-align: left;
-  padding: 0.35rem 0.5rem;
-  border-bottom: 1px solid var(--border);
+  padding: var(--space-2);
+  border-bottom: var(--border-w) solid var(--border);
 }
 .result .headline,
 .choice {
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
   font-weight: 700;
 }
 .projection {
-  font-size: 1.6rem;
+  font-size: var(--text-xl);
 }
 .projection h1 {
-  font-size: 2.4rem;
+  font-size: var(--text-2xl);
 }

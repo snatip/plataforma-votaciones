@@ -1,0 +1,31 @@
+/*
+ * Optional colours for this deployment. Empty by default: the platform uses its neutral palette.
+ * Colores opcionales de este despliegue. Vacío por defecto: se usa la paleta neutra.
+ *
+ * Override only these tokens, in both themes, and check WCAG 2.2 AA contrast
+ * (text 4.5:1 against the background and against --accent-fg):
+ *   --accent         links, primary buttons, the current tab, focus ring
+ *   --accent-strong  hover of primary buttons
+ *   --accent-fg      text on --accent
+ *   --accent-bg      tinted background of the "open" badge
+ *
+ * Example with a dark blue identity colour (#122562):
+ *
+ * :root {
+ *   --accent: oklch(0.292 0.111 266);
+ *   --accent-strong: oklch(0.24 0.09 266);
+ *   --accent-fg: oklch(0.985 0.003 266);
+ *   --accent-bg: oklch(0.95 0.02 266);
+ * }
+ * @media (prefers-color-scheme: dark) {
+ *   :root {
+ *     --accent: oklch(0.8 0.08 266);
+ *     --accent-strong: oklch(0.87 0.06 266);
+ *     --accent-fg: oklch(0.2 0.03 266);
+ *     --accent-bg: oklch(0.3 0.05 266);
+ *   }
+ * }
+ *
+ * A bright red such as #ee2722 does not reach 4.5:1 on a light background: it is not valid as
+ * --accent for text, only for decorative details.
+ */
