@@ -90,6 +90,28 @@
       --info-bg: oklch(0.25 0.014 245);
     }
   }
+  /* Paper is light whatever the screen theme. */
+  @media print {
+    :root {
+      --bg: oklch(1 0 0);
+      --surface: oklch(1 0 0);
+      --surface-2: oklch(0.95 0 0);
+      --fg: oklch(0.15 0 0);
+      --fg-muted: oklch(0.35 0 0);
+      --border: oklch(0.6 0 0);
+      --border-strong: oklch(0.35 0 0);
+      --accent: oklch(0.15 0 0);
+      --accent-strong: oklch(0.15 0 0);
+      --accent-fg: oklch(1 0 0);
+      --accent-bg: oklch(0.95 0 0);
+      --ok: oklch(0.15 0 0);
+      --ok-bg: oklch(1 0 0);
+      --error: oklch(0.15 0 0);
+      --error-bg: oklch(1 0 0);
+      --info-bg: oklch(1 0 0);
+      color-scheme: light;
+    }
+  }
 }
 * {
   box-sizing: border-box;
@@ -180,6 +202,13 @@ header nav a {
   color: var(--fg-muted);
   text-decoration: none;
 }
+header nav a:hover,
+.tabs button:hover {
+  color: var(--fg);
+}
+a:hover {
+  text-decoration-thickness: 0.12em;
+}
 header nav a[aria-current="page"] {
   color: var(--fg);
   font-weight: 700;
@@ -223,12 +252,29 @@ label {
 label + :is(input, select, textarea) {
   margin-top: var(--space-1);
 }
+/* A radio or checkbox option is a full-width row: easier to hit, and the chosen one is visible. */
 label.option {
   display: flex;
-  gap: var(--space-2);
+  gap: var(--space-3);
   align-items: center;
   font-weight: 400;
   min-height: var(--target);
+  margin: var(--space-1) 0 0;
+  padding: var(--space-1) var(--space-3);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-control);
+  cursor: pointer;
+}
+label.option:hover {
+  border-color: var(--border-strong);
+}
+label.option:has(input:checked) {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+}
+label.option:has(input:disabled) {
+  color: var(--fg-muted);
+  cursor: not-allowed;
 }
 input,
 select,
@@ -245,9 +291,22 @@ textarea {
 :is(input:not([type="checkbox"], [type="radio"]), select, textarea) {
   display: block;
 }
-label.option input {
+input:is([type="checkbox"], [type="radio"]) {
   width: var(--check);
   height: var(--check);
+  margin: 0 var(--space-2) 0 0;
+  vertical-align: middle;
+  accent-color: var(--accent);
+}
+label.option input {
+  flex: none;
+  margin: 0;
+}
+:is(input, select, textarea):hover {
+  border-color: var(--fg-muted);
+}
+:is(input, select, textarea):user-invalid {
+  border-color: var(--error);
 }
 button,
 .button {
@@ -269,9 +328,21 @@ button.primary {
   border-color: var(--accent);
   font-weight: 650;
 }
-button[disabled] {
-  opacity: 0.6;
-  cursor: wait;
+:is(button, .button):hover {
+  background: var(--surface-2);
+  border-color: var(--fg-muted);
+}
+button.primary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
+/* Disabled: both "nothing chosen yet" and "sending"; flat and muted rather than faded. */
+button[disabled],
+button[disabled]:hover {
+  color: var(--fg-muted);
+  background: var(--surface-2);
+  border-color: var(--border);
+  cursor: not-allowed;
 }
 button + :is(button, .button),
 .button + button {
@@ -463,4 +534,44 @@ td {
 }
 .projection h1 {
   font-size: var(--text-2xl);
+}
+/* Windows high contrast and similar: keep the states that colour alone was showing. */
+@media (forced-colors: active) {
+  .badge,
+  .status,
+  label.option {
+    border-color: CanvasText;
+  }
+  .tabs button[aria-current="page"] {
+    border-bottom-color: Highlight;
+  }
+  label.option:has(input:checked) {
+    border-color: Highlight;
+  }
+  .quorum::before {
+    forced-color-adjust: none;
+    border-color: CanvasText;
+  }
+  .quorum.met::before {
+    background: CanvasText;
+  }
+}
+/* Print (minutes, results): content only, on paper. */
+@media print {
+  header,
+  .skip,
+  .tabs,
+  button,
+  .button {
+    display: none;
+  }
+  main,
+  main[data-view] {
+    max-width: none;
+    padding: 0;
+  }
+  .card,
+  tr {
+    break-inside: avoid;
+  }
 }
