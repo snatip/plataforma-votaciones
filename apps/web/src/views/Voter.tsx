@@ -221,9 +221,9 @@ function BallotForm({ v, right, send }: { v: VotingView; right: number; send: (a
   );
 
   let fields;
-  if (v.method === "yes_no") fields = radio("q", `${label(right)} — ${t("choose")}`, (["for", "against", "blank", "abstain"] as const).map((x) => [x, t(`v_${x}`)]));
+  if (v.method === "yes_no") fields = radio("q", `${label(right)} · ${t("choose")}`, (["for", "against", "blank", "abstain"] as const).map((x) => [x, t(`v_${x}`)]));
   else if (v.method === "single_winner")
-    fields = radio("choice", `${label(right)} — ${t("choose")}`, [
+    fields = radio("choice", `${label(right)} · ${t("choose")}`, [
       ...(v.params.candidates as string[]).map((c) => [c, name(v, c)] as [string, string]),
       ["blank", t("v_blank")],
       ["against_all", t("v_against_all")],
@@ -240,7 +240,7 @@ function BallotForm({ v, right, send }: { v: VotingView; right: number; send: (a
     fields = (
       <fieldset>
         <legend>
-          {label(right)} — {t("mark_up_to", { k })}
+          {label(right)} · {t("mark_up_to", { k })}
         </legend>
         {(v.params.candidates as string[]).map((c) => (
           <label key={c} class="option">
