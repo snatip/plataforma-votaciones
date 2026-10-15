@@ -10,18 +10,23 @@
 @layer tokens {
   :root {
     /* Colour (OKLCH). A deployment can override the accent in public/theme.css. */
-    --bg: oklch(1 0 0);
-    --surface: oklch(0.975 0.005 258);
-    --surface-2: oklch(0.975 0.005 258);
-    --fg: oklch(0.218 0 0);
-    --fg-muted: oklch(0.45 0 0);
-    --border: oklch(0.82 0 0);
-    --border-strong: oklch(0.45 0 0);
-    --accent: oklch(0.478 0.147 254);
-    --accent-strong: oklch(0.478 0.147 254);
-    --accent-fg: oklch(1 0 0);
-    --ok: oklch(0.466 0.119 147);
-    --error: oklch(0.462 0.175 27);
+    /* Neutrals tinted toward a cool slate; one ink accent for actions, selection and focus. */
+    --bg: oklch(0.975 0.004 245);
+    --surface: oklch(0.995 0.002 245);
+    --surface-2: oklch(0.945 0.007 245);
+    --fg: oklch(0.24 0.015 245);
+    --fg-muted: oklch(0.46 0.015 245);
+    --border: oklch(0.87 0.008 245);
+    --border-strong: oklch(0.56 0.013 245);
+    --accent: oklch(0.43 0.09 230);
+    --accent-strong: oklch(0.35 0.08 230);
+    --accent-fg: oklch(0.985 0.004 230);
+    --accent-bg: oklch(0.935 0.03 230);
+    --ok: oklch(0.45 0.11 155);
+    --ok-bg: oklch(0.95 0.035 155);
+    --error: oklch(0.49 0.17 27);
+    --error-bg: oklch(0.95 0.025 27);
+    --info-bg: oklch(0.95 0.01 245);
 
     /* Type: six sizes. */
     --font-sans: "Atkinson Hyperlegible Next", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
@@ -47,12 +52,14 @@
     --space-12: 3rem;
 
     /* Shape and sizes. */
-    --radius-control: 4px;
-    --radius-panel: 6px;
+    --radius-control: 6px;
+    --radius-panel: 10px;
     --radius-pill: 999px;
     --border-w: 1px;
     --focus-w: 3px;
     --focus-offset: 2px;
+    --indicator-w: 3px;
+    --dot: 0.625em;
     --target: 2.75rem;
     --check: 1.25rem;
     --width-field: 36rem;
@@ -65,18 +72,22 @@
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: oklch(0.19 0.007 258);
-      --surface: oklch(0.242 0.013 258);
-      --surface-2: oklch(0.242 0.013 258);
-      --fg: oklch(0.943 0 0);
-      --fg-muted: oklch(0.773 0 0);
-      --border: oklch(0.426 0.015 260);
-      --border-strong: oklch(0.773 0 0);
-      --accent: oklch(0.769 0.121 253);
-      --accent-strong: oklch(0.769 0.121 253);
-      --accent-fg: oklch(0.158 0.007 258);
-      --ok: oklch(0.791 0.123 149);
-      --error: oklch(0.761 0.142 21);
+      --bg: oklch(0.17 0.008 245);
+      --surface: oklch(0.205 0.01 245);
+      --surface-2: oklch(0.255 0.012 245);
+      --fg: oklch(0.94 0.006 245);
+      --fg-muted: oklch(0.76 0.012 245);
+      --border: oklch(0.32 0.012 245);
+      --border-strong: oklch(0.6 0.014 245);
+      --accent: oklch(0.8 0.085 225);
+      --accent-strong: oklch(0.87 0.07 225);
+      --accent-fg: oklch(0.18 0.02 235);
+      --accent-bg: oklch(0.29 0.045 230);
+      --ok: oklch(0.8 0.12 155);
+      --ok-bg: oklch(0.27 0.045 155);
+      --error: oklch(0.77 0.13 25);
+      --error-bg: oklch(0.28 0.055 25);
+      --info-bg: oklch(0.25 0.014 245);
     }
   }
 }
@@ -131,6 +142,7 @@ header {
   gap: 0 var(--space-2);
   align-items: center;
   padding: var(--space-2) var(--space-4);
+  background: var(--surface);
   border-bottom: var(--border-w) solid var(--border);
 }
 .brand {
@@ -162,9 +174,17 @@ header nav a {
 }
 a {
   color: var(--accent);
+  text-underline-offset: 0.2em;
 }
-a[aria-current="page"] {
+header nav a {
+  color: var(--fg-muted);
+  text-decoration: none;
+}
+header nav a[aria-current="page"] {
+  color: var(--fg);
   font-weight: 700;
+  text-decoration: underline var(--indicator-w) var(--accent);
+  text-underline-offset: 0.45em;
 }
 main {
   max-width: var(--width-narrow);
@@ -218,9 +238,12 @@ textarea {
   max-width: var(--width-field);
   padding: var(--space-2);
   color: var(--fg);
-  background: var(--bg);
+  background: var(--surface);
   border: var(--border-w) solid var(--border-strong);
   border-radius: var(--radius-control);
+}
+:is(input:not([type="checkbox"], [type="radio"]), select, textarea) {
+  display: block;
 }
 label.option input {
   width: var(--check);
@@ -244,6 +267,7 @@ button.primary {
   background: var(--accent);
   color: var(--accent-fg);
   border-color: var(--accent);
+  font-weight: 650;
 }
 button[disabled] {
   opacity: 0.6;
@@ -298,20 +322,70 @@ legend {
 .ballot {
   margin-top: var(--space-4);
 }
+/* Status of a voting: text first, colour only reinforces it. */
 .badge {
+  display: inline-block;
+  vertical-align: middle;
   font-size: var(--text-sm);
-  font-weight: 600;
-  border: var(--border-w) solid currentColor;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  color: var(--fg);
+  background: var(--surface-2);
+  border: var(--border-w) solid var(--border);
   border-radius: var(--radius-pill);
   padding: 0 var(--space-2);
   white-space: nowrap;
 }
+.badge-open {
+  color: var(--accent);
+  background: var(--accent-bg);
+  border-color: var(--accent);
+}
+.badge-created,
+.badge-awaiting_pages,
+.badge-awaiting_draw {
+  color: var(--fg-muted);
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--border-strong);
+}
+.badge-annulled {
+  color: var(--error);
+  background: var(--error-bg);
+  border-color: var(--error);
+}
+/* Quorum: a filled dot when there is quorum, a ring when there is not. */
+.quorum::before {
+  content: "";
+  display: inline-block;
+  width: var(--dot);
+  height: var(--dot);
+  margin-inline-end: var(--space-2);
+  border-radius: var(--radius-pill);
+  vertical-align: 0.05em;
+}
+.quorum.met::before {
+  background: var(--ok);
+}
+.quorum.not-met::before {
+  border: calc(var(--border-w) * 2) solid var(--error);
+}
+.status {
+  padding: var(--space-3) var(--space-4);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--info-bg);
+}
 .status-ok {
   color: var(--ok);
+  background: var(--ok-bg);
+  border-color: var(--ok);
 }
 .status-error {
   color: var(--error);
-  font-weight: 600;
+  background: var(--error-bg);
+  border-color: var(--error);
+  font-weight: 650;
 }
 .note {
   color: var(--fg-muted);
@@ -327,14 +401,22 @@ legend {
   gap: var(--space-1);
   overflow-x: auto;
   margin: var(--space-4) 0 var(--space-6);
+  border-bottom: var(--border-w) solid var(--border);
 }
 .tabs button {
   flex: none;
   margin: 0;
+  padding: var(--space-2) var(--space-3);
+  color: var(--fg-muted);
+  background: transparent;
+  border: 0;
+  border-bottom: var(--indicator-w) solid transparent;
+  border-radius: 0;
 }
 .tabs button[aria-current="page"] {
-  background: var(--accent);
-  color: var(--accent-fg);
+  color: var(--fg);
+  font-weight: 650;
+  border-bottom-color: var(--accent);
 }
 table {
   border-collapse: collapse;
