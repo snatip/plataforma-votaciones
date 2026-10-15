@@ -548,13 +548,10 @@ td {
   :is(button, .button):not(.tabs button, [disabled]):active {
     transform: scale(0.98);
   }
-  /* A new message (vote received, error) settles into place instead of popping in. */
+  /* A new message (vote received, error) settles into place. No fade: its text keeps full contrast. */
   .status {
-    transition:
-      opacity var(--duration-enter) var(--ease-out),
-      transform var(--duration-enter) var(--ease-out);
+    transition: transform var(--duration-enter) var(--ease-out);
     @starting-style {
-      opacity: 0;
       transform: translateY(var(--space-1));
     }
   }
