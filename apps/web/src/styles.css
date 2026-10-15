@@ -55,7 +55,11 @@
     --focus-offset: 2px;
     --target: 2.75rem;
     --check: 1.25rem;
-    --width-main: 48rem;
+    --width-field: 36rem;
+    --width-narrow: 42rem;
+    --width-wide: 72rem;
+    --width-full: 90rem;
+    --projection-scale: 1.5;
 
     color-scheme: light dark;
   }
@@ -120,22 +124,41 @@ li {
 code {
   font-family: var(--font-mono);
 }
+/* Header: name and actions on the first row, navigation below on small screens; one row from 48rem. */
 header {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2) var(--space-4);
+  gap: 0 var(--space-2);
   align-items: center;
-  padding: var(--space-3) var(--space-4);
+  padding: var(--space-2) var(--space-4);
   border-bottom: var(--border-w) solid var(--border);
 }
 .brand {
-  margin: 0;
+  margin: 0 auto 0 0;
   font-weight: 700;
 }
 header nav {
+  order: 1;
+  flex-basis: 100%;
   display: flex;
   gap: var(--space-4);
-  flex: 1;
+}
+header nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--target);
+}
+@media (min-width: 48rem) {
+  header {
+    gap: var(--space-2) var(--space-6);
+  }
+  .brand {
+    margin-right: 0;
+  }
+  header nav {
+    order: 0;
+    flex: 1 1 auto;
+  }
 }
 a {
   color: var(--accent);
@@ -144,9 +167,15 @@ a[aria-current="page"] {
   font-weight: 700;
 }
 main {
-  max-width: var(--width-main);
+  max-width: var(--width-narrow);
   margin: 0 auto;
-  padding: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-12);
+}
+main[data-view="officials"] {
+  max-width: var(--width-wide);
+}
+main[data-view="projection"] {
+  max-width: var(--width-full);
 }
 main:focus {
   outline: none;
@@ -168,8 +197,11 @@ main:focus {
 }
 label {
   display: block;
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
   font-weight: 600;
+}
+label + :is(input, select, textarea) {
+  margin-top: var(--space-1);
 }
 label.option {
   display: flex;
@@ -183,6 +215,7 @@ select,
 textarea {
   font: inherit;
   width: 100%;
+  max-width: var(--width-field);
   padding: var(--space-2);
   color: var(--fg);
   background: var(--bg);
@@ -216,13 +249,20 @@ button[disabled] {
   opacity: 0.6;
   cursor: wait;
 }
-header button {
+button + :is(button, .button),
+.button + button {
+  margin-inline-start: var(--space-2);
+}
+header button,
+td :is(button, .button) {
   margin-top: 0;
 }
 fieldset {
   border: var(--border-w) solid var(--border);
   border-radius: var(--radius-control);
-  margin: 0;
+  margin: var(--space-4) 0 0;
+  padding: var(--space-2) var(--space-4) var(--space-3);
+  min-width: 0;
 }
 legend {
   font-weight: 700;
@@ -234,6 +274,26 @@ legend {
   border-radius: var(--radius-panel);
   padding: var(--space-4);
   margin: var(--space-4) 0;
+}
+@media (min-width: 48rem) {
+  .card {
+    padding: var(--space-6);
+  }
+}
+.card > :first-child {
+  margin-top: 0;
+}
+.card > :last-child {
+  margin-bottom: 0;
+}
+/* No box inside a box: inside a card a fieldset is a titled group, not a second frame. */
+.card fieldset {
+  border: 0;
+  padding: 0;
+}
+.card legend {
+  padding: 0;
+  margin-bottom: var(--space-1);
 }
 .ballot {
   margin-top: var(--space-4);
@@ -259,12 +319,18 @@ legend {
 .fingerprint code {
   font-size: var(--text-md);
   letter-spacing: 0.02em;
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
+/* One row that scrolls sideways on small screens instead of three rows of tabs. */
 .tabs {
   display: flex;
-  flex-wrap: wrap;
   gap: var(--space-1);
+  overflow-x: auto;
+  margin: var(--space-4) 0 var(--space-6);
+}
+.tabs button {
+  flex: none;
+  margin: 0;
 }
 .tabs button[aria-current="page"] {
   background: var(--accent);
@@ -281,20 +347,37 @@ th {
 th,
 td {
   text-align: left;
-  padding: var(--space-2);
+  vertical-align: middle;
+  padding: var(--space-2) var(--space-3);
   border-bottom: var(--border-w) solid var(--border);
+}
+:is(th, td):first-child {
+  padding-left: 0;
+}
+:is(th, td):last-child {
+  padding-right: 0;
 }
 .quorum,
 .result {
   font-variant-numeric: tabular-nums;
+}
+.result table {
+  max-width: var(--width-narrow);
 }
 .result .headline,
 .choice {
   font-size: var(--text-lg);
   font-weight: 700;
 }
+/* The projection keeps the same six steps, enlarged for a screen across the room. */
 .projection {
-  font-size: var(--text-xl);
+  --text-sm: calc(0.875rem * var(--projection-scale));
+  --text-base: calc(1rem * var(--projection-scale));
+  --text-md: calc(1.125rem * var(--projection-scale));
+  --text-lg: calc(1.375rem * var(--projection-scale));
+  --text-xl: calc(1.75rem * var(--projection-scale));
+  --text-2xl: calc(2.25rem * var(--projection-scale));
+  font-size: var(--text-base);
 }
 .projection h1 {
   font-size: var(--text-2xl);

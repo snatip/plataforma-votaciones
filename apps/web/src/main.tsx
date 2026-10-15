@@ -72,7 +72,7 @@ function App() {
           </button>
         )}
       </header>
-      <main id="main" tabIndex={-1}>
+      <main id="main" tabIndex={-1} data-view={cfg().api === null ? "off" : !session ? "login" : r}>
         {cfg().api === null ? (
           <Off />
         ) : !session ? <Login onLogin={setS} /> : r === "officials" ? <Officials /> : r === "projection" ? <Projection /> : <Voter />}
