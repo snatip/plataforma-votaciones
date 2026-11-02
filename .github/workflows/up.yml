@@ -22,7 +22,7 @@ jobs:
       api: ${{ steps.hosts.outputs.api }}
       reception: ${{ steps.hosts.outputs.reception }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
       - name: Install the OCI CLI
         if: env.PROVIDER == 'oracle'
         # No secret is in this job's files or environment yet, and every package is hash-checked.
